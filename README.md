@@ -1,6 +1,6 @@
-# Lsystog 
+# Gridz
 
-Lsystog is a python module to generate images.
+Gridz is a python tool to generate images.
 
 Please have a look at the "sample_images" folder to see examples of generated images.
 
