@@ -65,11 +65,11 @@ with st.form("my_form"):
     examples = """
     Few possible patterns with 3 colors that you may copy and paste above
     
-    - 012_120_201 ( 3X3 )
-    - 1001_0220_0220_1001 ( 4X4 )
-    - 00000_01110_01210_01110_00000 ( 5X5 )
-    - T0000_01210_02020_01210_0000T ( 5X5 )
-    - 00000_01210_02T20_01210_00000 ( 5X5 )
+    - **:green[012_120_201]** ( 3X3 )
+    - **:green[1001_0220_0220_1001]** ( 4X4 )
+    - **:green[00000_01110_01210_01110_00000]** ( 5X5 )
+    - **:green[T0000_01210_02020_01210_0000T]** ( 5X5 )
+    - **:green[00000_01210_02T20_01210_00000]** ( 5X5 )
     """
 
     st.markdown(examples)
@@ -88,3 +88,8 @@ with st.form("my_form"):
             # Currently : streamlit.errors.StreamlitAPIException: `_repr_html_()` is not a valid Streamlit command.
             if verbose:
                 print(exc)
+
+    st.markdown("---")
+    st.markdown(
+        "More infos and :star: at [github.com/gdarid/gridz](https://github.com/gdarid/gridz)"
+    )
