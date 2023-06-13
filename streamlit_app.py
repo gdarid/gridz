@@ -27,9 +27,9 @@ verbose = False  # Set verbose to true for more printed information
 first_time = True  # At start, no need to click the draw button
 
 md = """
-You can specify your own colors and your own pattern 
+You have the flexibility to define your own colors and pattern
 
-Just click "Draw", when your new input is OK :sunglasses:
+Simply click on "Draw" when you are satisfied with your new input :sunglasses:
 
 The possible colors are :
 - R : Red
@@ -47,12 +47,11 @@ The possible colors are :
 - T : Background color (black)
 - ? : Random color
 
-The pattern gives the colors from left to right
-and from up to down (the "rows" are separated with an underscore)
+The pattern assigns colors from left to right and from top to bottom, with each "row" separated by an underscore
 
-The pattern is made of "rotating" colors represented by digits and fixed colors (see the possible colors above)
+The pattern consists of "rotating" colors represented by digits and fixed colors (refer to the available colors mentioned above)
 
-Draw with one iteration to see how the pattern works
+To understand how the pattern functions, try drawing with just one iteration
 """
 
 st.sidebar.markdown(md)
