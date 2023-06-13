@@ -2,7 +2,7 @@
 
 Gridz is a Python tool used for generating images
 
-There is a stramlit application here : [Gridz](https://gdarid-gridz.streamlit.app/)
+There is a streamlit application here : [Gridz](https://gdarid-gridz.streamlit.app/)
 
 Please have a look at the "sample_images" folder to see examples of generated images
 
