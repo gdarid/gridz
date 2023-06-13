@@ -13,7 +13,7 @@ def load_img(pattern, colors, nb_iterations):
         st.warning(ex)
         st.stop()
     except Exception as ex:
-        st.warning("Something went wrong, please check your parameters")
+        st.warning("Please verify your parameters. Special characters are not permitted in the pattern except for '?'")
         print(f"Something went wrong : {ex}")
         st.stop()
     else:
