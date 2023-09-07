@@ -8,11 +8,13 @@ Lindenmayer System (L-system) with a grid (and a subgrid, ...)
 import random as rnd
 import numpy as np
 
+from typing import Callable, Optional
+
 
 # Tool functions
 # ----------------------
 
-def strc_2_array(chaine):
+def strc_2_array(chaine: str) -> list[list[str]]:
     """
     Donne le "tableau" (liste de listes) correspondant à une chaîne (de coloriage)
 
@@ -32,7 +34,7 @@ def strc_2_array(chaine):
     return [[elem for elem in ligne] for ligne in res]
 
 
-def array_2_strc(tab):
+def array_2_strc(tab: list[list[str]]) -> str:
     """
     Donne la chaîne (de coloriage) correspondant à un tableau
 
@@ -46,7 +48,7 @@ def array_2_strc(tab):
     return '_'.join([''.join(ligne) for ligne in tab])
 
 
-def strc_2_strc_90(chaine):
+def strc_2_strc_90(chaine: str) -> str:
     """
     Donne la nouvelle chaîne (de coloriage) à partir d'une première chaîne
     en appliquant une rotation à 90° (sens horaire)
@@ -74,7 +76,7 @@ def strc_2_strc_90(chaine):
     return array_2_strc(tab_np)
 
 
-def func_alea_iter(seq, numalea):
+def func_alea_iter(seq: list, numalea: int) -> str:
     """
     Fonction de retour "aléatoire" sur la séquence seq en fonction de numalea
 
@@ -95,7 +97,7 @@ def func_alea_iter(seq, numalea):
 # ----------------------
 class LsystError(Exception):
     """ Specific errors """
-    def __init__(self, *args):
+    def __init__(self, *args) -> None:
         super().__init__(*args)
 
 
@@ -104,8 +106,10 @@ class Lsystg:
     L-Syst with grid colors
     """
 
-    def __init__(self, axiom, rules, nbiter, func_transf=None, func_alea=None, patterns=None, colors=None,
-                 banned_colors='', nb_dest=1, test=False, verbose=False, rnd_seed=123456789):
+    def __init__(self, axiom: str | None, rules, nbiter: int, func_transf: Optional[Callable] = None,
+                 func_alea: Optional[Callable] = None, patterns: list[str] | None = None, colors: str | None = None,
+                 banned_colors: str = '', nb_dest: int = 1, test: bool = False, verbose: bool = False,
+                 rnd_seed: int = 123456789) -> None:
         self.axiom = axiom
         self.rules = rules
         self.nbiter = nbiter
@@ -144,7 +148,7 @@ class Lsystg:
     # --------------
 
     @staticmethod
-    def x_y_tx_ty(pos, niveaux, mmx, mmy):
+    def x_y_tx_ty(pos: list[list[int]], niveaux, mmx: int, mmy: int) -> tuple[int, int, int, int]:
         """
         Retourne (x,y,tx,ty) à partir d'une "position", ...
             pos : [[lx, ly], ...] où lx, ly est la position locale pour chaque niveau
@@ -170,7 +174,7 @@ class Lsystg:
 
         return mmx * x, mmy * y, mmx * tx, mmy * ty
 
-    def img_remplir(self, img, x, y, tx, ty, couleur):
+    def img_remplir(self, img, x: int, y: int, tx: int, ty: int, couleur: str) -> None:
         """
         Remplir une image avec un rectangle
             img : image du même type que PIL.ImageDraw.Draw
@@ -234,7 +238,7 @@ class Lsystg:
         img.rectangle([(x, y), (x + tx - 1, y + ty - 1)], fill=pcoul, outline=None)
 
     @staticmethod
-    def pattern_colors(pattern):
+    def pattern_colors(pattern: str) -> list[str]:
         """
         Returns a sorted list of the colors of a pattern
 
@@ -248,17 +252,18 @@ class Lsystg:
 
     # Normal methods
     # --------------
-    def warning(self, msg):
+    def warning(self, msg: str) -> None:
         if self.verbose:
             print(msg)
 
-    def error(self, msg):
+    def error(self, msg: str) -> None:
         if self.verbose:
             print(msg)
 
         raise LsystError(msg)
 
-    def img_remplir_gen(self, draw, lpos, niveaux, mmx, mmy, car):
+    def img_remplir_gen(self, draw, lpos: list[list[int]], niveaux: list[tuple[int, int]],
+                        mmx: int, mmy: int, car: str) -> None:
         """
         Remplir une image avec
             draw : image du même type que PIL.ImageDraw.Draw
@@ -268,9 +273,9 @@ class Lsystg:
             car : couleur à appliquer (pour un mode RGBA)
         """
 
-        self.img_remplir(draw, *Lsystg.x_y_tx_ty(lpos, niveaux, mmx, mmy), car)
+        self.img_remplir(draw, *Lsystg.x_y_tx_ty(lpos, niveaux, mmx, mmy), couleur=car)
 
-    def decoupe_str(self, chaine):
+    def decoupe_str(self, chaine: str) -> tuple[int, int]:
         """
         Donne la "découpe" d'une chaîne pour le "coloriage en quadrillage"
 
@@ -300,7 +305,7 @@ class Lsystg:
 
         return width, height
 
-    def developpe_unit_prf(self, chaine, li):
+    def developpe_unit_prf(self, chaine: str, li: int) -> tuple[str, tuple[int, int]]:
         """
         Développe un chaîne à partir d'une collection itérable de règles
 
@@ -393,7 +398,7 @@ class Lsystg:
 
         return resultat, ndecoupe
 
-    def developpe_prf(self):
+    def developpe_prf(self) -> list:
         """
         Développe un axiome à partir d'une collection itérable de règles, sur nbiter itérations
 
@@ -450,7 +455,7 @@ class Lsystg:
         self.dev_prf = [resultat, niveaux]
         return self.dev_prf
 
-    def developpe_prf_patterns(self):
+    def developpe_prf_patterns(self) -> list:
         """
         This method generates an axiom and some rules from s.patterns, s.colors, s.banned_colors (s = self)
         """
@@ -518,11 +523,12 @@ class Lsystg:
         self.warning(f'Rules for {self.patterns} and {self.colors} : {self.rules} ')
 
         if self.test:
-            return 'Mode test', self.rules
+            return ['Mode test', self.rules]
 
         return self.developpe_prf()
 
-    def img(self, img_fpath, func_img=None, col_fond=(0, 0, 0, 0)):
+    def img(self, img_fpath: str, func_img: Optional[Callable] = None,
+            col_fond: tuple[int, int, int, int] = (0, 0, 0, 0)):
         """
         Sauvegarde l'image "contenue" dans `dev_prf` dans `img_fpath` (chemin)
 
