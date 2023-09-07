@@ -23,6 +23,15 @@ pip install -r requirements.txt
 3. Consider slightly increasing the number of iterations to enhance the image quality
 4. Alternatively, reducing the number of iterations will expedite the process
 
+## Streamlit application
+
+The streamlit application can be launched locally
+
+```bash
+streamlit run streamlit_app.py
+```
+
+
 ## Notes
 
 This project is an ongoing personal project (with documentation and redesign currently in progress). 
