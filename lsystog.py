@@ -1,6 +1,4 @@
 """
-@author: GDA
-
 Lindenmayer System (L-system) with a grid (and a subgrid, ...)
 
 """
@@ -8,6 +6,7 @@ Lindenmayer System (L-system) with a grid (and a subgrid, ...)
 import random as rnd
 import numpy as np
 
+from loguru import logger
 from typing import Callable, Optional
 
 
@@ -18,17 +17,12 @@ def strc_2_array(chaine: str) -> list[list[str]]:
     """
     Donne le "tableau" (liste de listes) correspondant à une chaîne (de coloriage)
 
-    !!! La couleur de fond n'est pas traitée
-
     En retour :
         le tableau résultat (voir decoupe_str pour la "shape" correspondante)
 
     Exemple :
         'RG_BY' ==> [['R','G'],['B','Y']]
     """
-
-    # shape = decoupe_str(chaine)
-
     res = chaine.split('_')
 
     return [[elem for elem in ligne] for ligne in res]
@@ -254,11 +248,11 @@ class Lsystg:
     # --------------
     def warning(self, msg: str) -> None:
         if self.verbose:
-            print(msg)
+            logger.warning(msg)
 
     def error(self, msg: str) -> None:
         if self.verbose:
-            print(msg)
+            logger.error(msg)
 
         raise LsystError(msg)
 
@@ -392,9 +386,9 @@ class Lsystg:
             position = newpos + len(nchaine)
 
         if self.verbose:
-            print(f"Resulting string with {len(resultat)} characters")
-            print(f"First 50 characters : {resultat[:50]}")
-            print(f"Last 50 characters : {resultat[-50:]}")
+            logger.info(f"Resulting string with {len(resultat)} characters")
+            logger.info(f"First 50 characters : {resultat[:50]}")
+            logger.info(f"Last 50 characters : {resultat[-50:]}")
 
         return resultat, ndecoupe
 

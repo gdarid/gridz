@@ -1,16 +1,30 @@
+"""
+Streamlit application
+"""
 import streamlit as st
-import lsystog as ls
 from streamlit.errors import StreamlitAPIException
+from loguru import logger
+
+import lsystog as ls
 
 
 def on_change_selection():
+    """
+    Change the pattern when the starting pattern is changed
+
+    :return: None
+    """
     current_selection = st.session_state.my_selection
-    # pattern = examples_list[current_selection]
     st.session_state.my_pattern = current_selection
 
 
 @st.cache_data
 def load_img(pattern, colors, nb_iterations):
+    """
+    Return an image computed from the parameters
+
+    :return: image
+    """
     try:
         gls = ls.Lsystg(axiom=None, rules=None, nbiter=nb_iterations, patterns=[pattern], colors=colors,
                         banned_colors='/', nb_dest=1, verbose=True)
@@ -20,7 +34,7 @@ def load_img(pattern, colors, nb_iterations):
         st.stop()
     except Exception as ex:
         st.warning("Please verify your parameters. Special characters are not permitted in the pattern except for '?'")
-        print(f"Something went wrong : {ex}")
+        logger.error(f"Something went wrong : {ex}")
         st.stop()
     else:
         return image
@@ -29,16 +43,16 @@ def load_img(pattern, colors, nb_iterations):
 st.set_page_config(page_title="Gridz", page_icon="🖼️")
 st.markdown("# Gridz")
 
-verbose = False  # Set verbose to true for more printed information
+VERBOSE = False  # Set verbose to true for more printed information
 first_time = True  # At start, no need to click the draw button
 
-md1 = """
+MD1 = """
 You have the flexibility to define your own colors and pattern
 
 Simply click on "Draw" when you are satisfied with your new input :sunglasses:
 """
 
-md2 = """
+MD2 = """
 The possible colors are :
 - R : Red
 - G : Green
@@ -62,32 +76,31 @@ The pattern consists of "rotating" colors represented by digits and fixed colors
 To understand how the pattern functions, try drawing with just one iteration
 """
 
-examples_list = ['00000_01210_02020_01210_00000', '012_120_201', '1001_0220_0220_1001',
+EXAMPLES_LIST = ['00000_01210_02020_01210_00000', '012_120_201', '1001_0220_0220_1001',
                  '00000_01110_01210_01110_00000', 'T000T_01210_02020_01210_T000T', '00000_01210_02T20_01210_00000']
 
-st.sidebar.markdown(md1)
+st.sidebar.markdown(MD1)
 
-input_selection = st.sidebar.selectbox('Choose a starting pattern', examples_list,
+input_selection = st.sidebar.selectbox('Choose a starting pattern', EXAMPLES_LIST,
                                        index=0, on_change=on_change_selection, key="my_selection")
 
-examples = f"""
+EXAMPLES = f"""
 Few possible patterns with 3 colors (GRB for example) that you can select
 
-- **:green[{examples_list[1]}]** ( 3X3 )
-- **:green[{examples_list[2]}]** ( 4X4 )
-- **:green[{examples_list[3]}]** ( 5X5 )
-- **:green[{examples_list[4]}]** ( 5X5 )
-- **:green[{examples_list[5]}]** ( 5X5 )
+- **:green[{EXAMPLES_LIST[1]}]** ( 3X3 )
+- **:green[{EXAMPLES_LIST[2]}]** ( 4X4 )
+- **:green[{EXAMPLES_LIST[3]}]** ( 5X5 )
+- **:green[{EXAMPLES_LIST[4]}]** ( 5X5 )
+- **:green[{EXAMPLES_LIST[5]}]** ( 5X5 )
 """
 
-st.sidebar.markdown(examples)
+st.sidebar.markdown(EXAMPLES)
 
-st.sidebar.markdown(md2)
+st.sidebar.markdown(MD2)
 
 with st.form("my_form"):
-    # 0000_0120_0210_0000 ... 00000_01/10_02020_01210_00000
     col = st.text_input('Colors', 'GRB', key='my_colors')
-    pat = st.text_input('Pattern', examples_list[0], key='my_pattern')
+    pat = st.text_input('Pattern', EXAMPLES_LIST[0], key='my_pattern')
 
     nb_iter = st.number_input('Number of iterations', value=4, min_value=1, max_value=10, format='%d')
 
@@ -101,7 +114,7 @@ with st.form("my_form"):
             st.write(st.image(img, caption='Generated image'))
         except StreamlitAPIException as exc:
             # Currently : streamlit.errors.StreamlitAPIException: `_repr_html_()` is not a valid Streamlit command.
-            if verbose:
+            if VERBOSE:
                 print(exc)
 
     st.markdown("---")
