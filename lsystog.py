@@ -3,11 +3,13 @@ Lindenmayer System (L-system) with a grid (and a subgrid, ...)
 
 """
 
+from collections import Counter
 import random as rnd
-import numpy as np
-
-from loguru import logger
 from typing import Callable, Optional
+
+import numpy as np
+from loguru import logger
+from PIL import Image as pim, ImageDraw
 
 
 # Tool functions
@@ -25,7 +27,7 @@ def strc_2_array(chaine: str) -> list[list[str]]:
     """
     res = chaine.split('_')
 
-    return [[elem for elem in ligne] for ligne in res]
+    return [list(ligne) for ligne in res]
 
 
 def array_2_strc(tab: list[list[str]]) -> str:
@@ -82,7 +84,7 @@ def func_alea_iter(seq: list, numalea: int) -> str:
     """
 
     nb = len(seq)
-    assert (nb > 0)
+    assert nb > 0
 
     return seq[numalea % nb]
 
@@ -246,13 +248,19 @@ class Lsystg:
 
     # Normal methods
     # --------------
+    def information(self, msg: str) -> None:
+        """ Information message """
+        if self.verbose:
+            logger.info(msg)
+
     def warning(self, msg: str) -> None:
+        """ Warning message """
         if self.verbose:
             logger.warning(msg)
 
     def error(self, msg: str) -> None:
-        if self.verbose:
-            logger.error(msg)
+        """ Error message """
+        logger.error(msg)
 
         raise LsystError(msg)
 
@@ -327,7 +335,6 @@ class Lsystg:
         ndecoupe = None
 
         if self.func_alea is not None:
-            from collections import Counter
             stockalea = Counter()
         else:
             stockalea = None
@@ -377,7 +384,7 @@ class Lsystg:
 
             if self.func_transf is not None:
                 # On "transforme" le motif de destination (nchaine) avec func_transf
-                for lni in range(li):
+                for _ in range(li):
                     nchaine = self.func_transf(nchaine)
 
             nchaine = '(' + nchaine + ')'
@@ -428,7 +435,7 @@ class Lsystg:
         niveaux = []
 
         if '(' in self.axiom or ')' in self.axiom:
-            self.error(f"Axiom with '(' or ')'")
+            self.error("Axiom with '(' or ')'")
 
         if self.sep2 in self.axiom:
             niveaux.append(self.decoupe_str(self.axiom))
@@ -483,10 +490,9 @@ class Lsystg:
             n_possible_col = possible_col
             n_nb_possible = nb_possible
 
-            # assert (nb_possible >= nb_coulm)  # This former necessary condition is treated below
             if nb_possible < nb_coulm:
                 # Fill n_possible_col with an arbitrary color
-                for ll_new in range(nb_coulm - nb_possible):
+                for _ in range(nb_coulm - nb_possible):
                     n_possible_col.append(self.arbitrary_color)
                 n_nb_possible = nb_coulm
 
@@ -514,7 +520,7 @@ class Lsystg:
                 # Several destinations ( nb_dest > 1 ) so it will be not deterministic
                 self.rules.append((coul, cont_dest))
 
-        self.warning(f'Rules for {self.patterns} and {self.colors} : {self.rules} ')
+        self.information(f'Rules for {self.patterns} and {self.colors} : {self.rules} ')
 
         if self.test:
             return ['Mode test', self.rules]
@@ -559,8 +565,6 @@ class Lsystg:
         mmx, mmy = self.x_basis, self.y_basis
 
         # Créer l'image
-        from PIL import Image as pim, ImageDraw
-
         tx, ty = mmx * niveaux[0][0], mmy * niveaux[0][1]
 
         imgn = pim.new("RGBA", (tx, ty), color=col_fond)
