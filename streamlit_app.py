@@ -77,7 +77,8 @@ To understand how the pattern functions, try drawing with just one iteration
 """
 
 EXAMPLES_LIST = ['00000_01210_02020_01210_00000', '012_120_201', '1001_0220_0220_1001',
-                 '00000_01110_01210_01110_00000', 'T000T_01210_02020_01210_T000T', '00000_01210_02T20_01210_00000']
+                 '00000_01110_01210_01110_00000', 'T000T_01210_02020_01210_T000T', '00000_01210_02T20_01210_00000',
+                 '1112T2_1T12T2_111222_1TTT2T_1TTT2T_1TTT2T']
 
 st.sidebar.markdown(MD1)
 
@@ -92,6 +93,7 @@ Few possible patterns with 3 colors (GRB for example) that you can select
 - **:green[{EXAMPLES_LIST[3]}]** ( 5X5 )
 - **:green[{EXAMPLES_LIST[4]}]** ( 5X5 )
 - **:green[{EXAMPLES_LIST[5]}]** ( 5X5 )
+- **:green[{EXAMPLES_LIST[6]}]** ( 6X6 )
 """
 
 st.sidebar.markdown(EXAMPLES)
