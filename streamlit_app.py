@@ -19,15 +19,16 @@ def on_change_selection():
 
 
 @st.cache_data
-def load_img(pattern, colors, nb_iterations):
+def load_img(pattern, colors, nb_iterations, apply_rotation):
     """
     Return an image computed from the parameters
 
     :return: image
     """
+    func_transf = ls.strc_2_strc_90 if apply_rotation else None
     try:
         gls = ls.Lsystg(axiom=None, rules=None, nbiter=nb_iterations, patterns=[pattern], colors=colors,
-                        banned_colors='/', nb_dest=1, verbose=True)
+                        banned_colors='/', nb_dest=1, verbose=True, func_transf=func_transf)
         image = gls.img(img_fpath="", col_fond=(0, 0, 0, 255))
     except ls.LsystError as ex:
         st.warning(ex)
@@ -93,7 +94,7 @@ Few possible patterns with 3 colors (GRB for example) that you can select
 - **:green[{EXAMPLES_LIST[3]}]** ( 5X5 )
 - **:green[{EXAMPLES_LIST[4]}]** ( 5X5 )
 - **:green[{EXAMPLES_LIST[5]}]** ( 5X5 )
-- **:green[{EXAMPLES_LIST[6]}]** ( 6X6 )
+- **:green[1112T2_1T12T2_..._1TTT2T_1TTT2T]** ( 6X6 )
 """
 
 st.sidebar.markdown(EXAMPLES)
@@ -103,6 +104,7 @@ st.sidebar.markdown(MD2)
 with st.form("my_form"):
     col = st.text_input('Colors', 'GRB', key='my_colors')
     pat = st.text_input('Pattern', EXAMPLES_LIST[0], key='my_pattern')
+    rotation = st.checkbox("90° rotation", True)
 
     nb_iter = st.number_input('Number of iterations', value=4, min_value=1, max_value=10, format='%d')
 
@@ -110,14 +112,14 @@ with st.form("my_form"):
     submitted = st.form_submit_button("Draw")
     if submitted or first_time:
         first_time = False
-        img = load_img(pat, col, nb_iter)
+        img = load_img(pat, col, nb_iter, rotation)
 
         try:
             st.write(st.image(img, caption='Generated image'))
         except StreamlitAPIException as exc:
             # Currently : streamlit.errors.StreamlitAPIException: `_repr_html_()` is not a valid Streamlit command.
             if VERBOSE:
-                print(exc)
+                logger.warning(exc)
 
     st.markdown("---")
     st.markdown(
