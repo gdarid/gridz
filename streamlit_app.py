@@ -2,7 +2,6 @@
 Streamlit application
 """
 import streamlit as st
-from streamlit.errors import StreamlitAPIException
 from loguru import logger
 
 import lsystog as ls
@@ -114,12 +113,7 @@ with st.form("my_form"):
         first_time = False
         img = load_img(pat, col, nb_iter, rotation)
 
-        try:
-            st.write(st.image(img, caption='Generated image'))
-        except StreamlitAPIException as exc:
-            # Currently : streamlit.errors.StreamlitAPIException: `_repr_html_()` is not a valid Streamlit command.
-            if VERBOSE:
-                logger.warning(exc)
+        st.image(img, caption='Generated image')
 
     st.markdown("---")
     st.markdown(
